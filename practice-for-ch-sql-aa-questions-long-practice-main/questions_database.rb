@@ -1,17 +1,18 @@
 require 'sqlite3'
 require 'singleton'
 
-class QuestionsDatabase
+class QuestionsDatabase < SQLite3::Database
+    include Singleton
     def initialize
-        @database = SQLite3::Database.new('./questions.db')
-        @database.results_as_hash = true
-        @database.type_translation = true
+        super('questions.db')
+        self.results_as_hash = true
+        self.type_translation = true
     end
 
-    def execute(*args)
-        @database.execute(*args)
-    end
+    # def execute(*args)
+    #     self.execute(*args)
+    # end
 end
 
-q = QuestionsDatabase.new
-p q.execute("SELECT * FROM questions;")
+# q = QuestionsDatabase.new
+# p q.execute("SELECT * FROM questions;")
