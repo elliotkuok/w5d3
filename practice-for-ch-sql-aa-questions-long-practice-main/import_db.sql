@@ -23,8 +23,8 @@ DROP TABLE IF EXISTS question_follows;
 
 CREATE TABLE question_follows (
   id INTEGER PRIMARY KEY,
-  user_id INTEGER,
-  question_id INTEGER,
+  user_id INTEGER NOT NULL,
+  question_id INTEGER NOT NULL,
 
   FOREIGN KEY (user_id) REFERENCES users(id),
   FOREIGN KEY (question_id) REFERENCES questions(id)
@@ -35,9 +35,9 @@ DROP TABLE IF EXISTS replies;
 
 CREATE TABLE replies (
   id INTEGER PRIMARY KEY,
-  questions_id TEXT NOT NULL,
-  parent_id TEXT NOT NULL,
-  user_id TEXT NOT NULL,
+  questions_id INTEGER NOT NULL,
+  parent_id INTEGER NOT NULL,
+  user_id INTEGER NOT NULL,
   body TEXT NOT NULL,
 
   FOREIGN KEY (questions_id) REFERENCES questions(id),
@@ -57,6 +57,7 @@ CREATE TABLE question_likes (
   FOREIGN KEY (question_id) REFERENCES questions(id)
 );
 
+
 INSERT INTO
   users (fname, lname)
 VALUES
@@ -71,19 +72,19 @@ VALUES
 
 
 INSERT INTO
-  question_follows (user_id, question_follows)
+  question_follows (user_id, question_id)
 VALUES
-  (1, 'Why are we doing this?'),
-  (2, 'What is the point?');
+  (1, 1),
+  (2, 1);
   
 INSERT INTO
-  replies (question_id, parent_id, user_id, body)
+  replies (questions_id, parent_id, user_id, body)
 VALUES
   (1, 1, 1, "reply to question"),
   (2, 2, 2, 'another reply to question');
 
 INSERT INTO
-  question_like (user_id, question_id)
+  question_likes (user_id, question_id)
 VALUES
   (1, 1),
   (2, 2);
