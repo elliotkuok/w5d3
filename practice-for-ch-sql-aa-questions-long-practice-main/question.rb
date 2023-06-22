@@ -1,16 +1,30 @@
 require_relative 'questions_database.rb'
 require_relative 'user.rb'
 require_relative 'reply.rb'
+require_relative 'question_follow.rb'
+require "byebug"
 
 class Question
+    def self.all
+        res = QuestionsDatabase.instance.execute(<<-SQL) 
+        SELECT 
+            *
+        FROM 
+            questions
+        SQL
+        res.map {|ele| Question.new(ele)}
+    end
+
     def self.find_by_id(id)
         res = QuestionsDatabase.instance.execute("SELECT * FROM questions WHERE id = ?;", id)
         res.first ? Question.new(res.first) : nil
     end
 
     def self.find_by_author_id(author_id)
-        authors = QuestionsDatabase.instance.execute("SELECT * FROM questions WHERE author_id = ?;", author_id)
-        authors.map {|question| Question.new(question)}
+        questions = QuestionsDatabase.instance.execute("SELECT * FROM questions WHERE author_id = ?;", author_id)
+        # authors.first ? Question.new(authors.first) : nil
+        # debugger
+        questions.map {|question| Question.new(question)}
     end
 
     def initialize(options)
@@ -27,12 +41,13 @@ class Question
     def replies
         Reply.find_by_question_id(@id)
     end
+
+    def followers
+        QuestionFollow.followers_for_question_id(@id)
+    end
 end
 
-# p Question.all
-# p Question.find_by_id(2)
-
-# if __FILE__ == $PROGRAM_NAME
-#     r = Question.find_by_id(2)
-#     p r.question
-# end
+if __FILE__ == $PROGRAM_NAME
+    r = Question.find_by_author_id(3)
+    r.each { |i| p i.followers }
+end
